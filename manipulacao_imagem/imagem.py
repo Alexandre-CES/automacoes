@@ -1,40 +1,52 @@
 from PIL import Image
-import random
+import math
 
-# Carrega a imagem
-with Image.open('imagens/vermelho_azul.jpg') as img:
+def Main():
+    # Carrega a imagem
+    with Image.open('imagens/arvore.jpg') as img:
 
-    # Obtém os dados dos pixels
-    pixels = img.load()
+        img = img.convert('L')
 
-    # Obtém as dimensões da imagem
-    largura, altura = img.size
+        # Obtém os dados dos pixels da original
+        pixels = img.load()
 
-    for x in range(largura):
-        for y in range(altura):
-            r, g, b = pixels[x, y]
+        # Obtém as dimensões da imagem
+        largura, altura = img.size
 
-            min_color = min(r,g,b)
-            max_color = max(r,g,b)
+        Gx = [
+            [1,0,-1],
+            [2,0,-2],
+            [1,0,-1]
+        ]
 
-            #Quase um filtro de smurf
+        Gy = [
+            [1,2,1],
+            [0,0,0],
+            [-1,-2,-1]
+        ]
 
-            if min_color == r and max_color == b:
-                pixels[x,y] = (max_color, g, min_color)
-            elif min_color == b and max_color == r:
-                pixels[x,y] = (min_color, g, max_color)
+        #Para não alterar a original
+        img_resultado = Image.new('L', (largura, altura))
+        pixels_resultado = img_resultado.load()
 
-            elif min_color == g and max_color == r:
-                pixels[x,y] = (max_color, b, min_color)
-            elif min_color == r and max_color == g:
-                pixels[x,y] = (min_color, b, max_color)
-             
-            elif min_color == g and max_color == b:
-                pixels[x,y] = (max_color, r, min_color)
-            elif min_color == b and max_color == g:
-                pixels[x,y] = (min_color, r, max_color)
-            
-            else:
-                pixels[x,y] = (max_color, max_color, max_color)
+        #iterar sob todos os pixels da imagem
+        for y in range(1,altura - 1):
+            for x in range(1,largura - 1):
+                GxSum = 0
+                GySum = 0
 
-    img.save('teste.jpeg')
+                #captar pixels adjacentes
+                for i in range(3):
+                    for j in range(3):
+                        GxSum += Gx[i][j] * pixels[x + j - 1, y + i - 1]
+                        GySum += Gy[i][j] * pixels[x + j - 1, y + i - 1]
+
+                G = math.sqrt(GxSum**2 + GySum**2)
+
+                G = int(G / math.sqrt(2 * (255**2)) * 255)
+
+                pixels_resultado[x,y] = G
+
+        img_resultado.save('arvore_sobel.jpg')
+
+Main()
