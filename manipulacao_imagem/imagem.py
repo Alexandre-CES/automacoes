@@ -6,7 +6,7 @@ def Main():
     image_file = input('Nome do arquivo da imagem: ')
 
     print('Qual filtro deseja?: ')
-    print('[0]Cancelar - [1]Sobel')
+    print('[0]Cancelar - [1]Suavizar - [2]Sobel')
     filter_opt = choose_opt(0,1)
     if filter_opt == 0:
         return
@@ -17,10 +17,11 @@ def Main():
         img_result = None
 
         if filter_opt == 1:
-            
+            img_result = suavizar(img)
+        elif filter_opt == 2:
             img_result = sobel(img)
 
-        img_result.save('resultado.jpg')
+        img_result.save('resultados/resultado.jpg')
 
 def choose_opt(min,max):
     opt = 0
@@ -36,6 +37,32 @@ def choose_opt(min,max):
             print('Opção inválida, tente novamente: ')
 
     return opt
+
+def suavizar(img):
+
+    # Obtém os dados dos pixels da original
+    pixels = img.load()
+
+    # Obtém as dimensões da imagem
+    largura, altura = img.size
+
+    #Cópia da original
+    img_result = Image.new('RGB', (largura, altura))
+    pixels_result = img_result.load()
+
+    for y in range(1,altura - 1):
+        for x in range(1,largura - 1):
+            soma_r, soma_g, soma_b = 0,0,0
+            for i in range(3):
+                for j in range(3):
+                    r, g, b = pixels[x + j - 1, y + i - 1]
+                    soma_r += r
+                    soma_g += g
+                    soma_b += b
+
+            pixels_result[x, y] = (int(soma_r / 9), int(soma_g / 9), int(soma_b / 9))
+
+    return img_result
 
 def sobel(img):
 
