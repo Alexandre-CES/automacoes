@@ -3,25 +3,29 @@ import math
 
 def Main():
 
-    image_file = input('Nome do arquivo da imagem: ')
+    img_file = input('Nome do arquivo da imagem: ')
 
     print('Qual filtro deseja?: ')
     print('[0]Cancelar - [1]Suavizar - [2]Sobel')
-    filter_opt = choose_opt(0,1)
+    filter_opt = choose_opt(0,2)
     if filter_opt == 0:
         return
 
     # Carrega a imagem
-    with Image.open(f'imagens/{image_file}') as img:
+    with Image.open(f'imagens/{img_file}') as img:
 
         img_result = None
+        img_file_name = img_file.split('.')[0]
+        effect_name = None
 
         if filter_opt == 1:
             img_result = suavizar(img)
+            effect_name = 'suavizar'
         elif filter_opt == 2:
             img_result = sobel(img)
+            effect_name = 'sobel'
 
-        img_result.save('resultados/resultado.jpg')
+        img_result.save(f'resultados/{img_file_name}-{effect_name}.jpg')
 
 def choose_opt(min,max):
     opt = 0
