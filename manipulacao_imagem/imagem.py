@@ -6,8 +6,8 @@ def Main():
     img_file = input('Nome do arquivo da imagem: ')
 
     print('Qual filtro deseja?: ')
-    print('[0]Cancelar - [1]Suavizar - [2]Sobel')
-    filter_opt = choose_opt(0,2)
+    print('[0]Cancelar - [1]Suavizar - [2]Sobel - [3]Inverter')
+    filter_opt = choose_opt(0,3)
     if filter_opt == 0:
         return
 
@@ -24,6 +24,9 @@ def Main():
         elif filter_opt == 2:
             img_result = sobel(img)
             effect_name = 'sobel'
+        elif filter_opt == 3:
+            img_result = inverter(img)
+            effect_name = 'inverter'
 
         img_result.save(f'resultados/{img_file_name}-{effect_name}.jpg')
 
@@ -113,6 +116,24 @@ def sobel(img):
 
             pixels_result[x,y] = G
         
+    return img_result
+
+def inverter(img):
+    # Obtém os dados dos pixels da original
+    pixels = img.load()
+
+    # Obtém as dimensões da imagem
+    largura, altura = img.size
+
+    #Cópia da original
+    img_result = Image.new('RGB', (largura, altura))
+    pixels_result = img_result.load()
+
+    for y in range(1,altura - 1):
+        for x in range(1,largura - 1):  
+            r,g,b = pixels[x,y]
+            pixels_result[x,y] = (255 - r, 255 - g, 255 - b)
+
     return img_result
 
 Main()
