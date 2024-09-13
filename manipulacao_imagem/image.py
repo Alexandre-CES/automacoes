@@ -6,27 +6,30 @@ def Main():
     img_file = input('Nome do arquivo da imagem: ')
 
     print('Qual filtro deseja?: ')
-    print('[0]Cancelar - [1]Suavizar - [2]Sobel - [3]Inverter')
-    filter_opt = choose_opt(0,3)
+    print('[0]Cancelar - [1]Suavizar - [2]Sobel - [3]Inverter - [4]Vermelho')
+    filter_opt = choose_opt(0,4)
     if filter_opt == 0:
         return
 
     # Carrega a imagem
-    with Image.open(f'imagens/{img_file}') as img:
+    with Image.open(f'images/{img_file}') as img:
 
         img_result = None
         img_file_name = img_file.split('.')[0]
         effect_name = None
 
         if filter_opt == 1:
-            img_result = suavizar(img)
+            img_result = smooth(img)
             effect_name = 'suavizar'
         elif filter_opt == 2:
             img_result = sobel(img)
             effect_name = 'sobel'
         elif filter_opt == 3:
-            img_result = inverter(img)
+            img_result = invert(img)
             effect_name = 'inverter'
+        elif filter_opt == 4:
+            img_result = turn_red(img)
+            effect_name = 'vermelho'
 
         img_result.save(f'resultados/{img_file_name}-{effect_name}.jpg')
 
@@ -45,7 +48,7 @@ def choose_opt(min,max):
 
     return opt
 
-def suavizar(img):
+def smooth(img):
 
     # Obtém os dados dos pixels da original
     pixels = img.load()
@@ -118,7 +121,7 @@ def sobel(img):
         
     return img_result
 
-def inverter(img):
+def invert(img):
     # Obtém os dados dos pixels da original
     pixels = img.load()
 
@@ -133,6 +136,29 @@ def inverter(img):
         for x in range(1,largura - 1):  
             r,g,b = pixels[x,y]
             pixels_result[x,y] = (255 - r, 255 - g, 255 - b)
+
+    return img_result
+
+def turn_red(img):
+     # Obtém os dados dos pixels da original
+    pixels = img.load()
+
+    # Obtém as dimensões da imagem
+    largura, altura = img.size
+
+    #Cópia da original
+    img_result = Image.new('RGB', (largura, altura))
+    pixels_result = img_result.load()
+
+    for y in range(1,altura - 1):
+        for x in range(1,largura - 1):  
+            r,g,b = pixels[x,y]
+
+            r = max(r,g,b)
+
+            gb_color = max(max(g,b) - 100, 0)
+
+            pixels_result[x,y] = (r,gb_color,gb_color)
 
     return img_result
 
