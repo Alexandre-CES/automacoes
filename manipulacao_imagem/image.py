@@ -6,8 +6,8 @@ def Main():
     img_file = input('Nome do arquivo da imagem: ')
 
     print('Qual filtro deseja?: ')
-    print('[0]Cancelar - [1]Suavizar - [2]Sobel - [3]Inverter - [4]Vermelho')
-    filter_opt = choose_opt(0,4)
+    print('[0]Cancelar - [1]Suavizar - [2]Sobel - [3]Inverter - [4]Vermelho - [5]Sepia')
+    filter_opt = choose_opt(0,5)
     if filter_opt == 0:
         return
 
@@ -30,6 +30,9 @@ def Main():
         elif filter_opt == 4:
             img_result = turn_red(img)
             effect_name = 'vermelho'
+        elif filter_opt == 5:
+            img_result = sepia(img)
+            effect_name = 'sepia'
 
         img_result.save(f'resultados/{img_file_name}-{effect_name}.jpg')
 
@@ -140,7 +143,7 @@ def invert(img):
     return img_result
 
 def turn_red(img):
-     # Obtém os dados dos pixels da original
+    # Obtém os dados dos pixels da original
     pixels = img.load()
 
     # Obtém as dimensões da imagem
@@ -159,6 +162,28 @@ def turn_red(img):
             gb_color = max(max(g,b) - 100, 0)
 
             pixels_result[x,y] = (r,gb_color,gb_color)
+
+    return img_result
+
+def sepia(img):
+    # Obtém os dados dos pixels da original
+    pixels = img.load()
+
+    # Obtém as dimensões da imagem
+    largura, altura = img.size
+
+    #Cópia da original
+    img_result = Image.new('RGB', (largura, altura))
+    pixels_result = img_result.load()
+
+    for y in range(1,altura - 1):
+        for x in range(1,largura - 1):  
+            r, g, b = pixels[x, y]
+            tr = int(0.393 * r + 0.769 * g + 0.189 * b)
+            tg = int(0.349 * r + 0.686 * g + 0.168 * b)
+            tb = int(0.272 * r + 0.534 * g + 0.131 * b)
+
+            pixels_result[x, y] = (min(tr, 255), min(tg, 255), min(tb, 255))
 
     return img_result
 
