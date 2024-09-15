@@ -57,23 +57,23 @@ def smooth(img):
     pixels = img.load()
 
     # Obtém as dimensões da imagem
-    largura, altura = img.size
+    width, height = img.size
 
     #Cópia da original
-    img_result = Image.new('RGB', (largura, altura))
+    img_result = Image.new('RGB', (width, height))
     pixels_result = img_result.load()
 
-    for y in range(1,altura - 1):
-        for x in range(1,largura - 1):
-            soma_r, soma_g, soma_b = 0,0,0
+    for y in range(1,height - 1):
+        for x in range(1,width - 1):
+            sum_r, sum_g, sum_b = 0,0,0
             for i in range(3):
                 for j in range(3):
                     r, g, b = pixels[x + j - 1, y + i - 1]
-                    soma_r += r
-                    soma_g += g
-                    soma_b += b
+                    sum_r += r
+                    sum_g += g
+                    sum_b += b
 
-            pixels_result[x, y] = (int(soma_r / 9), int(soma_g / 9), int(soma_b / 9))
+            pixels_result[x, y] = (int(sum_r / 9), int(sum_g / 9), int(sum_b / 9))
 
     return img_result
 
@@ -86,10 +86,10 @@ def sobel(img):
     pixels = img.load()
 
     # Obtém as dimensões da imagem
-    largura, altura = img.size
+    width, height = img.size
 
     #Cópia da original
-    img_result = Image.new('L', (largura, altura))
+    img_result = Image.new('L', (width, height))
     pixels_result = img_result.load()
     
     Gx = [
@@ -105,8 +105,8 @@ def sobel(img):
     ]
 
     #iterar sob todos os pixels da imagem
-    for y in range(1,altura - 1):
-        for x in range(1,largura - 1):
+    for y in range(1,height - 1):
+        for x in range(1,width - 1):
             GxSum = 0
             GySum = 0
 
@@ -129,14 +129,14 @@ def invert(img):
     pixels = img.load()
 
     # Obtém as dimensões da imagem
-    largura, altura = img.size
+    width, height = img.size
 
     #Cópia da original
-    img_result = Image.new('RGB', (largura, altura))
+    img_result = Image.new('RGB', (width, height))
     pixels_result = img_result.load()
 
-    for y in range(1,altura - 1):
-        for x in range(1,largura - 1):  
+    for y in range(1,height - 1):
+        for x in range(1,width - 1):  
             r,g,b = pixels[x,y]
             pixels_result[x,y] = (255 - r, 255 - g, 255 - b)
 
@@ -147,14 +147,14 @@ def turn_red(img):
     pixels = img.load()
 
     # Obtém as dimensões da imagem
-    largura, altura = img.size
+    width, height = img.size
 
     #Cópia da original
-    img_result = Image.new('RGB', (largura, altura))
+    img_result = Image.new('RGB', (width, height))
     pixels_result = img_result.load()
 
-    for y in range(1,altura - 1):
-        for x in range(1,largura - 1):  
+    for y in range(1,height - 1):
+        for x in range(1,width - 1):  
             r,g,b = pixels[x,y]
 
             r = max(r,g,b)
@@ -170,14 +170,14 @@ def sepia(img):
     pixels = img.load()
 
     # Obtém as dimensões da imagem
-    largura, altura = img.size
+    width, height = img.size
 
     #Cópia da original
-    img_result = Image.new('RGB', (largura, altura))
+    img_result = Image.new('RGB', (width, height))
     pixels_result = img_result.load()
 
-    for y in range(1,altura - 1):
-        for x in range(1,largura - 1):  
+    for y in range(1,height - 1):
+        for x in range(1,width - 1):  
             r, g, b = pixels[x, y]
             tr = int(0.393 * r + 0.769 * g + 0.189 * b)
             tg = int(0.349 * r + 0.686 * g + 0.168 * b)
@@ -186,5 +186,6 @@ def sepia(img):
             pixels_result[x, y] = (min(tr, 255), min(tg, 255), min(tb, 255))
 
     return img_result
+
 
 Main()
